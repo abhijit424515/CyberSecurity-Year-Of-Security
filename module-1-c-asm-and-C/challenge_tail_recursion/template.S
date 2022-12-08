@@ -5,7 +5,7 @@ jmp rdi
 fib:
 /*
 ;# base case handled in `int 0x07; ret`
-;# if(rax < 2) -> Exec< mov rax, 1; ret>
+;# if(rax <= 2) -> Exec< mov rax, 1; ret>
 ;# Just follow this behavior, don't worry about how this internally works
 */
 int 0x07

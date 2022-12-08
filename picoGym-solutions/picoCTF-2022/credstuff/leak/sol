@@ -1,0 +1,13 @@
+use
+	grep -n cultiris usernames.txt
+to print the line number of the username
+
+use 
+	sed '378q;d' passwords.txt > enc_flag
+to save the encrypted password in a file
+
+looks like caesar cipher, that too rot13
+so use
+	cat enc_flag | tr 'a-zA-Z' 'n-za-mN-ZA-M'
+to get the flag
+	

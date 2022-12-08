@@ -1,0 +1,1 @@
+use xdg-open to open the PDF, then select the redacted area one by one to find the flag

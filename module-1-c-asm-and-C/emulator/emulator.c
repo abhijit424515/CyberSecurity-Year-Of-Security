@@ -1,3 +1,4 @@
+// flag{s0_s3cr3t_y3t_s0_fr33}
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -38,6 +39,7 @@ unsigned char registers[8] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 int main ()
 {
 	int instruction_pointer = 0;
+	// break is needed at end of each case in C
 	
 	while(1) {
 		unsigned char op0 = memory[instruction_pointer+0];
@@ -49,42 +51,56 @@ int main ()
 		switch(op0) {
 			case 0x00:
 				check_index(op1);
-				// UNIMPLEMENTED
+				registers[op1] = op2;
+				break;
 			case 0x01:
 				check_index(op1);
-				// UNIMPLEMENTED
+				registers[op1] += op2;
+				break;
 			case 0x02:
 				check_index(op1);
-				// UNIMPLEMENTED
+				registers[op1] -= op2;
+				break;
 			case 0x03:
 				check_index(op1);
 				check_index(op2);
-				// UNIMPLEMENTED
+				registers[op1] += registers[op2];
+				break;
 			case 0x04:
 				check_index(op1);
 				check_index(op2);
-				// UNIMPLEMENTED
+				registers[op1] -= registers[op2];
+				break;
 			case 0x05:
 				check_index(op1);
-				// UNIMPLEMENTED
+				printf("%c",registers[op1]);
+				break;
 			case 0x06:
 				check_index(op1);
-				// UNIMPLEMENTED
+				if (registers[op1]!=0){
+					instruction_pointer = op2;
+				}
+				break;
 			case 0x07:
 				check_index(op1);
-				// UNIMPLEMENTED
+				if (registers[op1]==0){
+					instruction_pointer = op2;
+				}
+				break;
 			case 0x08:
 				check_index(op1);
 				check_index(op2);
-				// UNIMPLEMENTED
+				registers[op1] = memory[registers[op2]];
+				break;
 			case 0x09:
 				check_index(op1);
 				check_index(op2);
-				// UNIMPLEMENTED
+				memory[registers[op1]]=registers[op2];
+				break;
 			case 0xff:
-				// UNIMPLEMENTED
+				return 0;			// not break;
 			default:
-				printf("Illegal instruction\n");
+				printf("Illegal instruction\n");	
 				return -1;
 		}
 	}

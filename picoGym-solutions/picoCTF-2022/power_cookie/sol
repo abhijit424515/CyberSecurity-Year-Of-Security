@@ -1,0 +1,2 @@
+in the browser, modify the JS file to make
+	document.cookie = "isAdmin=1";

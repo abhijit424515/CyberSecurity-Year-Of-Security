@@ -1,0 +1,2 @@
+for substitution cipher, use
+	cat message.txt | tr 'paqztndsrywfexgjkcvlbuhomi' 'abcdefghijklmnopqrstuvwxyz' | tr 'PAQZTNDSRYWFEXGJKCVLBUHOMI' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'

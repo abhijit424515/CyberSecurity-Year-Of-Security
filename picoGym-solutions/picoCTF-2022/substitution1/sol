@@ -1,0 +1,2 @@
+use an online substitution cipher brute force decoder
+cat message.txt | tr "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" "RLGVYKMSTHUFJEBOXAWPNQCZDIrlgvykmsthufjeboxawpnqczdi"

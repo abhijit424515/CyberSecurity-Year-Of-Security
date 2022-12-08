@@ -35,6 +35,11 @@ tmp = asm
 del asm
 asm = private_asm
 
+log_level='DEBUG'
+context.arch = 'x86_64'
+context.bits = 64
+
+
 def debug(string : str, end : str ='\n') :
     print(bcolors.OKGREEN + str(string) + bcolors.DEFAULT, end=end)
 

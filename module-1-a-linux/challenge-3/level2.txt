@@ -1,2 +1,2 @@
-flag{REDACTED}
-echo "I am good"
+flag{th3_m0de7at3_1ev31}
+env -i ./level2 | grep -Eo "flag{.*}" | tr -d ' '

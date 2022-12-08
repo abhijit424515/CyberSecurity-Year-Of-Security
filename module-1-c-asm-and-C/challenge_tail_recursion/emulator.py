@@ -8,40 +8,8 @@ import struct
 import re
 
 from debug import *
+from constants import *
 
-log_level='DEBUG'
-context.arch = 'x86_64'
-context.bits = 64
-
-LONG_LEN = 8
-CTR = 0
-
-# HI and LO control the range of test input with implied meanings.
-# NUM_INPUTS is the number of test cases.
-LO = 50
-HI = 95
-NUM_INPUTS = 10
-#LO = 3
-#HI = 10
-#NUM_INPUTS = 2
-
-mu = None
-hooks = []
-allowed_registers = set(['rdi', 'rax', 'rbp', 'rsp'])
-# call to only fib function are also allowed
-filter_list = ['int3', 'int', 'nop', 'mov', 'add', 'sub', 'push', 'pop']
-sandbox = False
-samples = []
-samples_out = []
-
-PAGE_SIZE = 0x1000
-STACK_SIZE = 0x80
-#STACK_SIZE = 0x8000
-BASE_STACK = 0x7FFF80000000 | (np.random.randint(0,0x7FFFF) << 12)
-STACK_LIMIT = BASE_STACK - STACK_SIZE
-STACK_PAGE  = BASE_STACK - int(PAGE_SIZE * np.ceil(STACK_SIZE/PAGE_SIZE))
-CHALL_BASE = 0x69420000 
-BASE_ADDR  = np.random.randint(0xFFF,0xFFFF) * PAGE_SIZE
 REG_MAP = {
     "rax": UC_X86_REG_RAX,
     "rdi": UC_X86_REG_RDI,
@@ -49,16 +17,6 @@ REG_MAP = {
     "rbp": UC_X86_REG_RBP,
     "rsp": UC_X86_REG_RSP,
 }
-
-target = 'fib'
-ins_string =";# <insert> your code here!"
-template = 'template.S'
-fib_file = 'fib.S'
-string_regex = r'[^a-zA-Z0-9]([a-zA-Z][a-zA-Z0-9]+)' 
-INT7_trav = False
-
-restricted = ['real10', 'real8', 'real4', 'tbyte', 'qword', 'fword', 'dword', 'sdword', 'word', 'sword', 'byte', 'sbyte', 'ptr']
-shadow_stack = []
 len_call = len(asm("call test; test:"))
 
 def eliminate (reg: str) :
@@ -68,9 +26,9 @@ def eliminate (reg: str) :
 def fibonacci(n: int) :
     """
     calculates the fibonacci of an integer n
-    fibonacci series : { 0:1, 1:1, 2:2, 3:3, 4:5, 6:8, 7:13, ...}
+    fibonacci series : { 1:1, 2:1, 3:2, 4:3, 5:5, 6:8, 7:13, ...}
     """
-    a_0 = 1
+    a_0 = 0
     a_1 = 1
     for _ in range(0,n):
         a_0 += a_1
@@ -191,6 +149,9 @@ def handle_INT(uc, intno, user_data) :
                 emu_err = "fail: Wrong answer? interesting... get'em out of 'ere!"
                 print("fail: Wrong answer? interesting... get'em out of 'ere!")
                 uc.emu_stop()
+                debug(f"QUERY         : {samples[curr]}")
+                debug(f"VALUE         : {val}")
+                debug(f"ACTUAL OUTPUT : {samples_out[curr]}")
                 return
 
         debug(f"CTR: {CTR}")
@@ -204,8 +165,6 @@ def handle_INT(uc, intno, user_data) :
         if CTR < NUM_INPUTS :
         #uc.reg_write(UC_X86_REG_RIP, uc.reg_read(UC_X86_REG_RIP) + 2)
             debug(f"QUERY         : {samples[curr]}")
-            debug(f"VALUE         : {val}")
-            debug(f"ACTUAL OUTPUT : {samples_out[curr]}")
             debug(f"VALUE         : {val}")
             debug(f"ACTUAL OUTPUT : {samples_out[curr]}")
         return
@@ -241,7 +200,7 @@ def handle_INT(uc, intno, user_data) :
         #uc.reg_write(UC_X86_REG_RAX, struct.unpack("<Q", uc.mem_read(stack_ptr, LONG_LEN))[0])
 
         ret = None
-        if v < 2 :
+        if v <= 2 :
             ret = uc.mem_read(stack_ptr, LONG_LEN)
             ret = struct.unpack("<Q", ret)[0]
             uc.reg_write(UC_X86_REG_RAX, 1)
@@ -309,26 +268,31 @@ if __name__=='__main__' :
     #print((2<<64)-1)
     #exit(42)
 
-    # setup
+    # submission
+    if len(sys.argv) >= 2 :
+        if sys.argv[1] == '-':
+            fib_code = ''
+            while True:
+                x = input()
+                if (x.strip() == END_MARKER):
+                    break
+                fib_code += x
+        else:
+            f = open(sys.argv[1], 'r')
+            fib_code = f.read()
+            f.close()
+    else:
+        f = open(fib_file, 'r')
+        fib_code = f.read()
+        f.close()
+
+        # setup
     f = open(template, 'r')
     code = f.read()
     f.close()
 
     code = re.sub(r'@NUM_INPUTS', str(NUM_INPUTS), code)
-
-    f = open(fib_file, 'r')
-    fib_code = f.read()
-    f.close()
-
-    # submission
-    if len(sys.argv) >= 2 :
-        if sys.argv[1] == '-':
-            fib_code = sys.stdin.read()
-        else:
-            f = open(sys.argv[1], 'r')
-            fib_code = f.read()
-            f.close()
-
+    
     #print(fib_code)
 
     # get offsets
@@ -345,6 +309,7 @@ if __name__=='__main__' :
     # test cases
     np.random.seed(ord(os.urandom(1)) & 0x1F)
     samples = np.random.randint([LO]*NUM_INPUTS, [HI]*NUM_INPUTS)
+    #samples = list(range(LO, HI+1))
     samples_out = list(map(fibonacci, samples))
 
     try:
@@ -375,4 +340,3 @@ if __name__=='__main__' :
     except UcError as e:
         print("ERROR: %s" % e)
         print("rip: 0x%x" % mu.reg_read(UC_X86_REG_RIP))
-

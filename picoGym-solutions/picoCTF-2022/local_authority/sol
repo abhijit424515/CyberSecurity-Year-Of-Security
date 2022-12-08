@@ -1,0 +1,3 @@
+the index.html file had a style.css (which was not useful) and login.php 
+the PHP file also used a style.css (not useful) and a secure.js file 
+the login and password were directly given in the JS file, using which we login and get the flag

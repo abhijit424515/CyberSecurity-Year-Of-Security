@@ -1,0 +1,4 @@
+mov rcx, rdi
+mov al, cl
+mov rcx, rsi
+mov bx, cx

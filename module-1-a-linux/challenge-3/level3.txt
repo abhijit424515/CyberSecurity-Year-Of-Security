@@ -1,2 +1,2 @@
-flag{REDACTED}
-echo "I am not fine:("
+flag{7h3_cha113ng3}
+bash -c "export CSeC=Awesome; exec -a YoS ./level3 | grep -Eo "flag{.*}" | tr -d ' ' > temp" && cat temp && rm temp

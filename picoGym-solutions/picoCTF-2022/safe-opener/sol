@@ -1,0 +1,6 @@
+upon analyzing the java file, the input is encoded to base64 and matched with a string (i.e. "cGwzYXMzX2wzdF9tM18xbnQwX3RoM19zYWYz")
+so, use 
+	echo "cGwzYXMzX2wzdF9tM18xbnQwX3RoM19zYWYz" | base64 -d
+to get the input passcode of the safe
+
+thus, we get the flag

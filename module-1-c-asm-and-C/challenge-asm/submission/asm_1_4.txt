@@ -1,0 +1,4 @@
+mov rax, 0xDEADBEEF00001337
+mov qword ptr [rdi], rax
+mov rax, 0x000000C0FFEE0000
+mov qword ptr [rsi], rax

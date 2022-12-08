@@ -53,7 +53,7 @@ Value in the first byte of instruction = opcode = 0x00
 <br> This instruction adds the values stored in the registers 
      referenced by the second and third byte of the instruction and 
      stores it back in the register referenced by the second byte.
-<br>*Eg.* 03 07 01 => stores value of r7+r1 into r1
+<br>*Eg.* 03 07 01 => stores value of r7+r1 into ~r1~ r7 (!!!)
 
 5. **SUB**
 <br>opcode = 0x04

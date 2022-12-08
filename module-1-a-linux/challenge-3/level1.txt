@@ -1,2 +1,4 @@
-flag{REDACTED}
-echo "Yo wassup"
+flag{th3_3a5iest_1ev3l}
+
+env ./level1
+set | grep -Eo "flag{.*}" | tr -d ' '
